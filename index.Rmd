@@ -50,6 +50,20 @@ position_in_communal <- read_csv(here("data", "SNS Data Zone 2011 blk", "QS419SC
 #join SIMD files
 #remove "%" and "*" and make numeric
 
+english_skills <-
+  rename(english_skills,
+         data_zone = "X1",
+         all_people_over_3 = "All people aged 3 and over",
+         understands_only = "Understands but does not speak read or write English",
+         speaks_only = "Speaks but does not read or write English",
+         no_skills = "No skills in English"
+         )
+
+english_skills <-
+  mutate(english_skills,
+         cant_read = (no_skills + understands_only + speaks_only)/all_people_over_3) %>%
+  mutate(cant_read = round(cant_read * 100, 0))
+
 position_in_communal <- 
   rename(position_in_communal,
          data_zone = "X1",
@@ -79,6 +93,8 @@ simd <- full_join(simd_indicators, simd_zones, by = c("Data_Zone" = "DZ"))
 simd <- left_join(simd, position_in_communal, by = c("Data_Zone" = "data_zone"))
 
 simd <- left_join(simd, general_health, by = c("Data_Zone" = "data_zone"))
+
+simd <- left_join(simd, english_skills, by = c("Data_Zone" = "data_zone"))
 # why do these joins change numberics to characters??
 
 simd <- 
@@ -90,6 +106,7 @@ simd %>%
          across(total_communal:family_communal, ~ as.numeric(.)),
          across(all_people:self_reported_health, ~as.numeric(.)),
          across(all_people:very_bad, ~ as.numeric(.)),
+         across(all_people_over_3:cant_read, ~ as.numeric(.)),
          total_communal_perc = round(total_communal/Total_population *100, 0))
 ```
 
@@ -142,12 +159,12 @@ aberdeen_sf %>%
 
 aberdeen %>%
   select(Data_Zone, Intermediate_Zone, Total_population, total_communal_perc, SIMD2020v2_Decile) %>%
-   filter(total_communal_perc >= 25) %>%
+   filter(total_communal_perc >10) %>%
    arrange(desc(total_communal_perc)) %>%
   gt() %>%
   tab_header(
     title = "Areas with most living/working communally", 
-    subtitle = "Data zones with >25% of population living or working in communal establishments") %>%
+    subtitle = "Data zones with >10% of population living or working in communal establishments") %>%
   cols_label(
     Data_Zone = "Data Zone",
     Intermediate_Zone = "Area", 
@@ -200,6 +217,48 @@ aberdeen %>%
   tab_options(container.height = 400)
 ```
 
+
+People who can't read English
+=====================================
+
+Row
+-------------------------------------
+
+###
+
+```{r}
+aberdeen_sf %>%
+  mapview(
+    map.types = "OpenStreetMap",
+    zcol = "cant_read", 
+    label = aberdeen_sf$Name,
+    layer.name = "can't read (%)",
+    alpha.regions = 0.8
+    )
+```
+
+
+###
+
+```{r}
+#
+
+aberdeen %>%
+  select(Data_Zone, Intermediate_Zone, Total_population, cant_read, SIMD2020v2_Decile) %>%
+   filter(cant_read > 10) %>%
+   arrange(desc(cant_read)) %>%
+  gt() %>%
+  tab_header(
+    title = "Cannot read English", 
+    subtitle = "Data zones with > 10% cannot read English") %>%
+  cols_label(
+    Data_Zone = "Data Zone",
+    Intermediate_Zone = "Area", 
+    Total_population = "Population", 
+    cant_read = "Cant' read (%)",
+    SIMD2020v2_Decile = "SIMD Decile")  %>%
+  tab_options(container.height = 400)
+```
 
 
 Sources
