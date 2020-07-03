@@ -190,7 +190,7 @@ aberdeen %>%
   gt() %>%
   tab_header(
     title = "Poor health", 
-    subtitle = "Data zones with > 5% reporting bad or very bad health (2011 census)") %>%
+    subtitle = "Data zones with > 5% reporting bad or very bad health") %>%
   cols_label(
     Data_Zone = "Data Zone",
     Intermediate_Zone = "Area", 
@@ -209,18 +209,11 @@ Row
 -------------------------------------
 ###
 
-Scottish Index of Multiple Deprivation 2020
-https://www.gov.scot/collections/scottish-index-of-multiple-deprivation-2020/
-
-Scottish Index of Multiple Deprivation 2020 technical notes
-https://www2.gov.scot/resource/0050/00504822.pdf
-
-Data from 
-https://www.gov.scot/publications/scottish-index-of-multiple-deprivation-2020v2-indicator-data/
-https://www.gov.scot/publications/scottish-index-of-multiple-deprivation-2020v2-data-zone-look-up/
+Data from 2011 Scotland Census
+https://www.scotlandscensus.gov.uk/ods-web/data-warehouse.html
 
 Map shapefiles from https://data.gov.uk/dataset/ab9f1f20-3b7f-4efa-9bd2-239acf63b540/data-zone-boundaries-2011
 
-Code at https://github.com/JessButler/simd
+Code and data at https://github.com/JessButler/simd
 
 
