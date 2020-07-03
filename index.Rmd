@@ -34,7 +34,7 @@ general_health <- read_csv(here("data", "SNS Data Zone 2011 blk", "QS302SC.csv")
 
 #long_term_health_condition <- QS304SC
 
-#ethnicity <- KS201SC
+ethnicity <- read_csv(here("data", "SNS Data Zone 2011 blk", "KS201SC.csv"))
 
 english_skills <- read_csv(here("data", "SNS Data Zone 2011 blk", "QS213SC.csv"))
 
