@@ -53,7 +53,8 @@ position_in_communal <- read_csv(here("data", "SNS Data Zone 2011 blk", "QS419SC
 
 ethnicity <-
   rename(ethnicity,
-         all_people_ethnicity = "All people")
+         all_people_ethnicity = "All people",
+         Polish = "White: Polish")
 
 
 english_skills <-
@@ -116,7 +117,8 @@ simd %>%
          across(all_people_over_3:cant_read, ~ as.numeric(.)),
          total_communal_perc = total_communal/Total_population *100,
          perc_white = as.numeric(White)/as.numeric(all_people_ethnicity) * 100,
-         perc_not_white = 100 - perc_white)
+         perc_not_white = 100 - perc_white,
+         perc_Polish = as.numeric(Polish)/as.numeric(all_people_ethnicity) * 100)
 ```
 
 
@@ -141,19 +143,42 @@ aberdeen_sf %>% mutate(pop_per_km2 = TotPop2011/StdAreaKm2)
 ```
 
 
-```{r, fig.height = 18}
+```{r}
 # p <-
 # ggplot(data = aberdeen, aes(y = overcrowded_rate, x = Intermediate_Zone, label = Data_Zone)) +
-#   #geom_boxplot() +
+#   geom_boxplot() +
 #   geom_point(size=4, aes(colour = factor(SIMD2020v2_Decile))) +
 #     scale_color_viridis(discrete=TRUE) +
 #   geom_point(size = 2) +
 #   scale_fill_viridis() +
 #   coord_flip() +
 #   theme(legend.title = element_blank(), axis.title.x = element_blank(), axis.title.y = element_blank(), legend.position="bottom", plot.title = element_text(hjust = 0.5)) +
-#   ggtitle("People living in overcrowed homes (%)")
+#   ggtitle("People living in overcrowed homes (%)") 
 # 
 # ggplotly(p, tooltip = c("label"))
+# 
+# 
+# polish_plot <- ggplot(data = aberdeen, aes(x = SIMD2020v2_Decile, label = DZname)) +
+#   geom_jitter(aes(y = perc_Polish, color = cant_read)) +
+#   scale_color_viridis() +
+#   scale_x_reverse(breaks = scales::pretty_breaks(10)) +
+#   labs(x = "Deprivation Decile (lower = more deprived)", y = "Polish (% total population)") +
+#   ggtitle("Polish Ethnicity and Deprivation") +
+#   theme_cowplot()
+# 
+# ggplotly(polish_plot, tooltip = c("label"))
+# 
+# non_white_plot <- ggplot(data = aberdeen, aes(x = SIMD2020v2_Decile, label = DZname)) +
+#   geom_jitter(aes(y = perc_not_white, color = cant_read)) +
+#   scale_color_viridis() +
+#   scale_x_reverse(breaks = scales::pretty_breaks(10)) +
+#   labs(x = "Deprivation Decile (lower = more deprived)", y = "Non-white (% total population)") +
+#   ggtitle("Non-white Ethnicity and Deprivation") +
+#   theme_cowplot()
+# 
+# ggplotly(non_white_plot, tooltip = c("label"))
+# 
+# plot_grid(polish_plot, non_white_plot)
 ```
 
 
@@ -167,6 +192,7 @@ Row
 
 ```{r}
 aberdeen_sf %>%
+  select(DataZone, Name, Total_population, SIMD2020v2_Decile, total_communal_perc) %>%
   mapview(
     map.types = "OpenStreetMap",
     zcol = "total_communal_perc", 
@@ -211,6 +237,7 @@ Row
 
 ```{r}
 aberdeen_sf %>%
+  select(DataZone, Name, Total_population, SIMD2020v2_Decile, bad_health) %>%
   mapview(
     map.types = "OpenStreetMap",
     zcol = "bad_health", 
@@ -255,11 +282,12 @@ Row
 
 ```{r}
 aberdeen_sf %>%
+  select(DataZone, Name, Total_population, SIMD2020v2_Decile, cant_read) %>%
   mapview(
     map.types = "OpenStreetMap",
     zcol = "cant_read", 
     label = aberdeen_sf$Name,
-    layer.name = "can't read (%)",
+    layer.name = "can't read English (%)",
     alpha.regions = 0.8
     )
 ```
@@ -299,11 +327,12 @@ Row
 
 ```{r}
 aberdeen_sf %>%
+  select(DataZone, Name, Total_population, SIMD2020v2_Decile, perc_not_white) %>%
   mapview(
     map.types = "OpenStreetMap",
     zcol = "perc_not_white", 
     label = aberdeen_sf$Name,
-    layer.name = "non-white (%)",
+    layer.name = "non-white ethnicity (%)",
     alpha.regions = 0.8
     )
 ```
