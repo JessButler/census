@@ -374,6 +374,6 @@ https://www.scotlandscensus.gov.uk/ods-web/data-warehouse.html
 
 Map shapefiles from https://data.gov.uk/dataset/ab9f1f20-3b7f-4efa-9bd2-239acf63b540/data-zone-boundaries-2011
 
-Code and data at https://github.com/JessButler/simd
+Code and data at https://github.com/JessButler/census
 
 
